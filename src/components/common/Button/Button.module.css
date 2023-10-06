@@ -1,0 +1,13 @@
+.button {
+    height: 50px;
+    color: var(--color-white);
+    background-color: var(--color-blue);
+    border-radius: var(--border-radius-medium);
+    padding: var(--spacing-zero) var(--spacing-medium);
+    font-size: var(--font-size-small);
+    flex-shrink: 0;
+}
+
+.button_destructive {
+    background-color: var(--color-red);
+}
