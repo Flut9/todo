@@ -1,0 +1,1 @@
+export type CallbackWithId = (id: string) => void

@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import ITodo from '../../types/ITodo'
 import { getUid } from '../../utils/uidUtil'
-import { setItem, getItems } from '../../utils/localstorageUtil'
+import { setTodoItems, getTodoItems } from '../../utils/localstorageUtil'
 
 import TodosList from '../../components/TodosList/TodosList'
 import Input from '../../components/common/Input/Input'
@@ -9,43 +9,43 @@ import Button from '../../components/common/Button/Button'
 
 import classes from './Todos.module.css'
 
-const Todos: React.FC = () => {
+const Todos = () => {
     const [todos, setTodos] = useState<ITodo[]>([])
     const [input, setInput] = useState('')
 
     useEffect(() => {
-        setTodos(getItems('todos') as ITodo[])
+        setTodos(getTodoItems())
     }, [])
 
-    const createTodo = () => {
+    const createTodo = useCallback(() => {
         const updatedTodos = [{ id: getUid(), title: input, isCompleted: false }, ...todos]
         setTodos(updatedTodos)
-        setItem('todos', updatedTodos)
-    }
-
-    const removeAllTodos = () => {
+        setTodoItems(updatedTodos)
+    }, [input, todos])
+ 
+    const removeAllTodos = useCallback(() => {
         const updatedTodos: ITodo[] = []
         setTodos(updatedTodos)
-        setItem('todos', updatedTodos)
-    }
+        setTodoItems(updatedTodos)
+    }, [todos])
 
-    const handleKeyDown: React.KeyboardEventHandler = event => {
+    const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
         if (event.key === 'Enter') {
             createTodo()
         }
-    }
+    }, [todos])
 
-    const handleInputChanged: React.ChangeEventHandler<HTMLInputElement> = event => {
+    const handleInputChanged = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setInput(event.target.value)
-    }
+    }, [input])
 
-    const removeTodo = (id: string) => {
+    const removeTodo = useCallback((id: string) => {
         const updatedTodos = todos.filter(todo => todo.id !== id)
         setTodos(updatedTodos)
-        setItem('todos', updatedTodos)
-    }
+        setTodoItems(updatedTodos)
+    }, [todos])
 
-    const toggleTodo = (id: string) => {
+    const toggleTodo = useCallback((id: string) => {
         const updatedTodos = todos.map(todo => {
             if (todo.id !== id) return todo
 
@@ -56,8 +56,8 @@ const Todos: React.FC = () => {
         })
 
         setTodos(updatedTodos)
-        setItem('todos', updatedTodos)
-    }
+        setTodoItems(updatedTodos)
+    }, [todos])
 
     return (
         <div className={classes.todos}>
@@ -65,9 +65,9 @@ const Todos: React.FC = () => {
                 <div className={classes.todos__topbar}>
                     <Input
                         value={input}
-                        placeholder='Enter a task title: ' 
-                        onChange={event => handleInputChanged(event)}
-                        onKeyDown={event => handleKeyDown(event)}
+                        placeholder="Enter a task title: " 
+                        onChange={handleInputChanged}
+                        onKeyDown={handleKeyDown}
                     />
                     <Button onClick={createTodo}>Add</Button>
                     <Button onClick={removeAllTodos} isDestructive={true}>Remove all</Button>
@@ -75,8 +75,8 @@ const Todos: React.FC = () => {
                 
                 <TodosList
                     todos={todos}
-                    onRemoveButtonClick={removeTodo}
-                    onToggleButtonClick={toggleTodo}
+                    onRemove={removeTodo}
+                    onToggle={toggleTodo}
                 />
             </div>
         </div>

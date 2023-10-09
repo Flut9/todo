@@ -1,24 +1,25 @@
 import ITodo from '../../types/ITodo'
+import { CallbackWithId } from '../../types/CallbackWithId'
 
 import TodoItem from '../TodoItem/TodoItem'
 
 import classes from './TodosList.module.css'
 
-interface ITodosProps {
+type Props = {
     todos: ITodo[],
-    onRemoveButtonClick: (id: string) => void,
-    onToggleButtonClick: (id: string) => void,
+    onRemove: CallbackWithId,
+    onToggle: CallbackWithId,
 }
 
-const TodosList: React.FC<ITodosProps> = (props) => {
+const TodosList = ({todos, onRemove, onToggle}: Props) => {
     return (
         <div className={classes['todos-list']}>
-            {props.todos.map(todo => (
+            {todos.map(todo => (
                 <TodoItem
                     key={todo.id}
                     {...todo}
-                    onRemoveButtonClick={props.onRemoveButtonClick} 
-                    onToggleButtonClick={props.onToggleButtonClick}
+                    onRemove={onRemove} 
+                    onToggle={onToggle}
                 />
             ))}
         </div>

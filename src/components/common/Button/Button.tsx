@@ -1,19 +1,23 @@
+import { useMemo } from 'react'
+
 import classes from './Button.module.css'
 
-interface IButtonProps {
+type Props = {
     children: string,
     isDestructive?: boolean,
     onClick: () => void,
 }
 
-const Button: React.FC<IButtonProps> = (props) => {
-    const buttonClasses = [
-        classes.button, 
-        props.isDestructive && classes.button_destructive
-    ].join(' ')
+const Button = (props: Props) => {
+    const getButtonClasses = useMemo(() => {
+        return [
+            classes.button, 
+            props.isDestructive && classes.button_destructive
+        ].join(' ')
+    }, [props.isDestructive])
 
     return (
-        <button className={buttonClasses} {...props}>{props.children}</button>
+        <button className={getButtonClasses} {...props}>{props.children}</button>
     )
 }
 
