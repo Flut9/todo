@@ -27,7 +27,7 @@ const Todos = () => {
         const updatedTodos: ITodo[] = []
         setTodos(updatedTodos)
         setTodoItems(updatedTodos)
-    }, [todos])
+    }, [])
 
     const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
         if (event.key === 'Enter') {
